@@ -17,21 +17,58 @@
     <ul id="list"></ul>
 </div>
 <script>
-    const teks = document.getElementById('teks');
-    const button = document.getElementById('button');
-    const list = document.getElementById('list');
+let editMode = false; 
+let currentLi = null;
 
-    button.addEventListener('click', function() {
-        const teksv = teks.value;
-        if(teksv !== "") {
-            const li = document.createElement('li');
-            li.textContent = teksv;
-            list.appendChild(li);
-            teks.value = "";  
-        }   else {
-            alert("tidak boleh kosong");
-        }
-    });
+button.addEventListener('click', function() {
+const teksv = teks.value.trim();
+
+if (teksv === "") {
+    alert("tidak boleh kosong");
+    return;
+    }
+
+if (editMode) {
+    currentLi.querySelector('span').textContent = teksv;
+    teks.value = "";
+    button.value = "Save";
+    editMode = false;
+    currentLi = null;
+    } else {
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.textContent = teksv;
+        li.appendChild(span);
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = "Edit";
+        editBtn.style.marginLeft = "10px";
+        editBtn.addEventListener('click', function() {
+            teks.value = span.textContent;
+            button.value = "Update Edit";
+            editMode = true;
+            currentLi = li;
+        });
+        li.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = "Delete";
+        delBtn.style.marginLeft = "5px";
+        delBtn.addEventListener('click', function() {
+        list.removeChild(li);
+            if (editMode && currentLi === li) {
+                teks.value = "";
+                button.value = "Save";
+                editMode = false;
+                currentLi = null;
+            }
+        });
+        li.appendChild(delBtn);
+
+        list.appendChild(li);
+        teks.value = "";  
+    }
+});
 </script>
 </body>
 </html>
